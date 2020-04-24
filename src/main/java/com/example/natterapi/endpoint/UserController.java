@@ -8,6 +8,10 @@ import com.example.natterapi.model.user.UserCredentials;
 import com.example.natterapi.model.user.UserRegistration;
 import com.example.natterapi.repository.UserRepository;
 import com.lambdaworks.crypto.SCryptUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +26,20 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.lambdaworks.crypto.SCryptUtil.check;
-import static org.springframework.util.StringUtils.*;
 
 @RestController
 @RequestMapping("/users")
+@Api(value = "/users")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
+    @ApiOperation(value = "/", notes = "POST a new user",httpMethod = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Accepted"),
+            @ApiResponse(code = 400, message = "Validation Error"),
+            @ApiResponse(code = 500, message = "Internal Error")})
     @PostMapping
     public ResponseEntity createNewUser(@Valid @RequestBody UserRegistration userRegistration) {
 
@@ -43,6 +52,12 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
+    @ApiOperation(value = "/", notes = "POST user auth", httpMethod = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 400, message = "Validation Error"),
+            @ApiResponse(code = 500, message = "Internal Error")})
     @PostMapping("/auth")
     public ResponseEntity userAuth(@Valid @RequestBody UserCredentials userCredentials) {
 

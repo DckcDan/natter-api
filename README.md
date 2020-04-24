@@ -12,7 +12,7 @@ Model layer which intends to server as a public model for this API.
 Domain layer which intends to only be used internally to persist data in MongoDB or any non-sql store
 
 This separation comes very important for two reasons:
-- Separation of the external and internal model which will help the maintanablituy of this API
+- Separation of the external and internal model which will help the maintainability of this API.
 - Only expose via Model layer the data that is required for the user and keep internal private data in the Domain layer.
 
 ## Exception handling
