@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Document("Spaces")
+@Document("Space")
 @Builder
 public class Space {
     @Transient

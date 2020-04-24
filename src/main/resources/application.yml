@@ -8,3 +8,10 @@ logging:
   properties:
     log-file-size: 256MB
     statistics-file-size: 32MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

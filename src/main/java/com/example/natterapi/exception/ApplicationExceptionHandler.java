@@ -1,7 +1,7 @@
 package com.example.natterapi.exception;
 
 import com.example.natterapi.model.ErrorResponse;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -29,8 +29,9 @@ import static com.example.natterapi.util.HttpServletUtils.getRequestBodyAsString
 import static java.lang.String.format;
 
 @RestControllerAdvice
-@Slf4j
-public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
+@Log4j2
+public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler
+{
 
     private static final String UUID_REF = "Ref: ";
 
@@ -49,7 +50,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
      */
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception exception, @Nullable Object body, HttpHeaders headers,
-                                                             HttpStatus status, WebRequest request) {
+                                                             HttpStatus status, WebRequest request)
+    {
         String uuid = generateUUId();
         log.error(buildRequestLogMessage((HttpServletRequest) ((ServletWebRequest) request).getNativeRequest(), uuid), exception);
 
@@ -69,11 +71,13 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
      * @return {@link ErrorResponse}
      */
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(HttpServletRequest request, RuntimeException exception) {
+    public ResponseEntity<ErrorResponse> handleRuntimeException(HttpServletRequest request, RuntimeException exception)
+    {
         return processInternalServerError(request, exception);
     }
 
-    private ResponseEntity<ErrorResponse> processInternalServerError(HttpServletRequest request, Throwable exception) {
+    private ResponseEntity<ErrorResponse> processInternalServerError(HttpServletRequest request, Throwable exception)
+    {
         String uuid = generateUUId();
         log.error(buildRequestLogMessage(request, uuid), exception);
         ExceptionCode exceptionCode = ExceptionCode.INTERNAL_ERROR;
@@ -92,7 +96,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
      * @return error message as XML-document
      */
     @RequestMapping
-    public ResponseEntity<ErrorResponse> handleError(HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleError(HttpServletRequest request)
+    {
         ExceptionCode exceptionCode;
         ErrorResponse errorRS;
         int statusCode = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
@@ -112,7 +117,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
 
-    private ErrorResponse buildErrorRS(String exceptionType, String uuid, String errorMessage) {
+    private ErrorResponse buildErrorRS(String exceptionType, String uuid, String errorMessage)
+    {
         return ErrorResponse.builder()
                 .message(errorMessage)
                 .errorCode(exceptionType)
@@ -121,7 +127,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
     }
 
-    private ErrorResponse buildErrorMessageRS(String errorPropertyName, String exceptionType, String[] args, String uuid) {
+    private ErrorResponse buildErrorMessageRS(String errorPropertyName, String exceptionType, String[] args, String uuid)
+    {
         String errorMessage = messageSource.getMessage(errorPropertyName, args, Locale.getDefault());
         return buildErrorRS(exceptionType, uuid, errorMessage);
     }
@@ -134,7 +141,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
      * @return
      */
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ErrorResponse> handleApplicationException(HttpServletRequest request, ApplicationException exception) {
+    public ResponseEntity<ErrorResponse> handleApplicationException(HttpServletRequest request, ApplicationException exception)
+    {
         String uuid = generateUUId();
         log.error(buildRequestLogMessage(request, uuid), exception);
         ExceptionCode exceptionCode = exception.getExceptionCode();
@@ -144,16 +152,19 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(errorMessage, exceptionCode.getType().getHttpStatus());
     }
 
-    private String generateUUId() {
+    private String generateUUId()
+    {
         return UUID.randomUUID().toString();
     }
 
-    private String buildRequestLogMessage(HttpServletRequest request, String uuid) {
+    private String buildRequestLogMessage(HttpServletRequest request, String uuid)
+    {
         return "Endpoint execution resulted in exception. Ref: " + uuid +
                 "The request which caused an exception: " + buildRequestInfo(request);
     }
 
-    private String buildRequestInfo(HttpServletRequest request) {
+    private String buildRequestInfo(HttpServletRequest request)
+    {
         return format("Received [%s] request: Headers [%s] Body [%s]",
                 request.getMethod(), getHeadersInfo(request), getRequestBodyAsString(request));
     }
@@ -167,7 +178,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request)
+    {
 
         List<ObjectError> allErrors = exception.getBindingResult().getAllErrors();
         log.error(exception.getMessage(), exception);
