@@ -1,6 +1,7 @@
-package com.example.natterapi.endpoint;
+package com.example.natterapi.endpoint.v1;
 
 import com.example.natterapi.domain.Space;
+import com.example.natterapi.model.ErrorResponse;
 import com.example.natterapi.model.SpaceModel;
 import com.example.natterapi.service.SpaceService;
 import io.swagger.annotations.Api;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,8 +33,8 @@ public class SpaceController {
     @ApiOperation(value = "/", notes = "POST a new space",httpMethod = "POST")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = SpaceModel.class),
-            @ApiResponse(code = 400, message = "Validation Error", response = SpaceModel.class),
-            @ApiResponse(code = 500, message = "Internal Error", response = SpaceModel.class)})
+            @ApiResponse(code = 400, message = "Validation Error", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Internal Error", response = ErrorResponse.class)})
     @PostMapping
     public ResponseEntity<SpaceModel> createSpace(@Valid @RequestBody SpaceModel space) throws URISyntaxException {
         return ResponseEntity.created((new URI("/spaces/" + space.getId())))
@@ -51,9 +51,9 @@ public class SpaceController {
     @ApiOperation(value = "/{id}", notes = "GET space ",httpMethod = "GET")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = SpaceModel.class),
-            @ApiResponse(code = 400, message = "Validation Error", response = SpaceModel.class),
-            @ApiResponse(code = 404, message = "Resource Not Found Error", response = SpaceModel.class),
-            @ApiResponse(code = 500, message = "Internal Error", response = SpaceModel.class)})
+            @ApiResponse(code = 400, message = "Validation Error", response = ErrorResponse.class),
+            @ApiResponse(code = 404, message = "Resource Not Found Error", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Internal Error", response = ErrorResponse.class)})
     @GetMapping("{id}")
     public ResponseEntity<SpaceModel> findSpace(@PathVariable Long id) {
         return (spaceService.findSpace(id))
@@ -73,7 +73,7 @@ public class SpaceController {
     @ApiOperation(value = "/", notes = "GET all stapces ", httpMethod = "GET")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = SpaceModel.class),
-            @ApiResponse(code = 500, message = "Internal Error", response = SpaceModel.class)})
+            @ApiResponse(code = 500, message = "Internal Error", response = ErrorResponse.class)})
     @GetMapping
     public ResponseEntity<List<Space>> getAllSpaces() {
         return ResponseEntity.ok().body(spaceService.findAll());

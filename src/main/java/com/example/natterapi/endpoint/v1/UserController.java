@@ -1,9 +1,10 @@
-package com.example.natterapi.endpoint;
+package com.example.natterapi.endpoint.v1;
 
 
 import com.example.natterapi.domain.User;
 import com.example.natterapi.exception.ApplicationException;
 import com.example.natterapi.exception.ExceptionCode;
+import com.example.natterapi.model.ErrorResponse;
 import com.example.natterapi.model.user.UserCredentials;
 import com.example.natterapi.model.user.UserRegistration;
 import com.example.natterapi.repository.UserRepository;
@@ -38,8 +39,8 @@ public class UserController {
     @ApiOperation(value = "/", notes = "POST a new user",httpMethod = "POST")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Accepted"),
-            @ApiResponse(code = 400, message = "Validation Error"),
-            @ApiResponse(code = 500, message = "Internal Error")})
+            @ApiResponse(code = 400, message = "Validation Error", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Internal Error", response = ErrorResponse.class)})
     @PostMapping
     public ResponseEntity createNewUser(@Valid @RequestBody UserRegistration userRegistration) {
 
@@ -55,9 +56,9 @@ public class UserController {
     @ApiOperation(value = "/", notes = "POST user auth", httpMethod = "POST")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 403, message = "Forbidden"),
-            @ApiResponse(code = 400, message = "Validation Error"),
-            @ApiResponse(code = 500, message = "Internal Error")})
+            @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+            @ApiResponse(code = 400, message = "Validation Error", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Internal Error", response = ErrorResponse.class)})
     @PostMapping("/auth")
     public ResponseEntity userAuth(@Valid @RequestBody UserCredentials userCredentials) {
 
@@ -80,9 +81,6 @@ public class UserController {
                 .name(userRegistration.getName())
                 .build();
     }
-
-
-
 
     private String hashPassword(String password){
        return SCryptUtil.scrypt(password, 32768, 8, 1);
