@@ -29,8 +29,8 @@ import java.util.Optional;
 import static com.lambdaworks.crypto.SCryptUtil.check;
 
 @RestController
-@RequestMapping("/users")
-@Api(value = "/users")
+@RequestMapping("/v1/users")
+@Api(value = "/v1/users")
 public class UserController {
 
     @Autowired
@@ -56,7 +56,7 @@ public class UserController {
     @ApiOperation(value = "/", notes = "POST user auth", httpMethod = "POST")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 400, message = "Validation Error", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Internal Error", response = ErrorResponse.class)})
     @PostMapping("/auth")
@@ -69,7 +69,7 @@ public class UserController {
                 return ResponseEntity.ok().build();
             }
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     private User mapUser(UserRegistration userRegistration) {

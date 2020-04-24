@@ -23,8 +23,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/spaces")
-@Api(value = "/spaces")
+@RequestMapping("/v1/spaces")
+@Api(value = "/v1/spaces")
 public class SpaceController {
 
     @Autowired
