@@ -1,0 +1,10 @@
+########## Logging configuration ##########
+logging:
+  path: /logs/natter-api/
+  file: natter-api
+  level:
+    root: INFO
+    statistics: DEBUG
+  properties:
+    log-file-size: 256MB
+    statistics-file-size: 32MB
