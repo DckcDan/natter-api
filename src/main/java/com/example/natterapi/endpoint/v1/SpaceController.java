@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -36,7 +37,8 @@ public class SpaceController {
             @ApiResponse(code = 400, message = "Validation Error", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Internal Error", response = ErrorResponse.class)})
     @PostMapping
-    public ResponseEntity<SpaceModel> createSpace(@Valid @RequestBody SpaceModel space) throws URISyntaxException {
+    public ResponseEntity<SpaceModel> createSpace(@Valid @RequestBody SpaceModel space, Principal principal) throws URISyntaxException {
+        //principal check that the owner of this space is actually the logged in user.
         return ResponseEntity.created((new URI("/spaces/" + space.getId())))
                 .body(mapSpaceToSpaceModel(spaceService.createNewSpace(mapSpaceModelToSpace(space))));
     }
@@ -44,7 +46,7 @@ public class SpaceController {
     private Space mapSpaceModelToSpace(SpaceModel space) {
         return Space.builder()
                 .name(space.getName())
-                .owner(space.getOwner())
+                .userName(space.getOwner())
                 .build();
     }
 
@@ -66,7 +68,7 @@ public class SpaceController {
                     .createdDate(space.getCreatedDate())
                     .id(space.getId())
                     .name(space.getName())
-                    .owner(space.getOwner())
+                    .owner(space.getUserName())
                     .build();
     }
 

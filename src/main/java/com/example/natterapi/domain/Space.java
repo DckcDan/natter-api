@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Document
+@Document("Spaces")
 @Builder
 public class Space {
     @Transient
@@ -18,7 +18,7 @@ public class Space {
     @Id
     private Long id;
     private String name;
-    private String owner;
+    private String userName;
     private LocalDate createdDate;
 
 }
