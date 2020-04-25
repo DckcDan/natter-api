@@ -7,6 +7,7 @@ import com.example.natterapi.domain.UserRole;
 import com.example.natterapi.exception.ApplicationException;
 import com.example.natterapi.exception.ExceptionCode;
 import com.example.natterapi.model.ErrorResponse;
+import com.example.natterapi.model.user.UserInfo;
 import com.example.natterapi.model.user.UserRegistration;
 import com.example.natterapi.repository.UserRepository;
 import com.example.natterapi.service.UserService;
@@ -17,17 +18,22 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.Collector;
+
+import static java.util.stream.Collectors.toList;
 
 
 @RestController
@@ -65,8 +71,22 @@ public class UserController {
                 .build();
     }
 
-    private Role createUserRole(){
-        return Role.builder().role(UserRole.USER.name()).build();
+
+    @GetMapping
+    public ResponseEntity<List<UserInfo>> getAllUsers(Principal principal){
+
+        return ResponseEntity.ok().body(mapUserToUserInfo(userService.findAll()));
+    }
+
+    private List<UserInfo> mapUserToUserInfo(List<User> users) {
+
+       return users.stream()
+                .map(user -> UserInfo.builder()
+                                .createdDate(user.getCreatedDate())
+                                 .userName(user.getUserName())
+                                  .build())
+               .collect(toList());
+
     }
 }
 

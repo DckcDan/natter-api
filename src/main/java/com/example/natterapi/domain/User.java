@@ -18,7 +18,7 @@ public class User {
     private String userName;
     private String name;
     private String emailAddress;
-    private LocalDateTime createdTime;
+    private LocalDateTime createdDate;
     private LocalDateTime lastLoggedIn;
     //user block, how many times faied logging.
     private String protectedPassword;

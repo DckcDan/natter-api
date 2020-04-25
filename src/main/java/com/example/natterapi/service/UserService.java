@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,7 +25,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User save(User user){
-        user.setCreatedTime(LocalDateTime.now());
+        user.setCreatedDate(LocalDateTime.now());
         Role userRole = roleRepository.findByRole(UserRole.USER.name());
         user.setRoles(new HashSet<>(Arrays.asList(userRole)));
         user.setActive(Boolean.TRUE);
@@ -35,6 +36,10 @@ public class UserService {
 
     public Optional<User> findById(String userName) {
         return userRepository.findById(userName);
+    }
+
+    public List<User> findAll(){
+        return userRepository.findAll();
     }
 
 

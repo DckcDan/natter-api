@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,21 +35,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
      @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-
+        //TODO remove csrf and secure actuator endpoints.
          http
                  .csrf().disable()
                  .authorizeRequests()
-                 .mvcMatchers(HttpMethod.POST,"*/users").permitAll()
-                 .mvcMatchers("/").hasRole("USER")
+                     .mvcMatchers(HttpMethod.POST,"*/users").permitAll()
+                     .mvcMatchers(HttpMethod.GET,"*/users").hasRole("ADMIN")
+                     .mvcMatchers("/spaces").hasRole("USER,ADMIN")
+                     .anyRequest().authenticated()
                  .and().httpBasic()
+                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                  .and().sessionManagement().disable();
+     }
+
 
          /*
          Secure actuatores endpoing
          http.requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests((requests) ->
                 requests.anyRequest().hasRole("ENDPOINT_ADMIN"));
          * */
-    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
